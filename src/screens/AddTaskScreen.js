@@ -9,6 +9,7 @@ import {ThemeContext} from '../context/ThemeContext';
 
 const translations = {
   en: {
+    s:'ss',
     incomplete: 'Incomplete',
     completed: 'Completed',
     taskSummary: (uncompleted, completed) =>
