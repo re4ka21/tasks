@@ -9,7 +9,6 @@ import {ThemeContext} from '../context/ThemeContext';
 
 const translations = {
   en: {
-    s:'ss',
     incomplete: 'Incomplete',
     completed: 'Completed',
     taskSummary: (uncompleted, completed) =>
@@ -130,6 +129,7 @@ const AddTaskScreen = () => {
         {showInput ? (
           <TaskInputForm
             newTask={newTask}
+            setIsVisible={setShowInput}
             setNewTask={setNewTask}
             addTask={addTask}
           />

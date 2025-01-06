@@ -5,9 +5,10 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  Modal,
+  Modal, TouchableWithoutFeedback, Pressable,
 } from 'react-native';
 import {LanguageContext} from '../context/LanguageContext';
+import {translations} from "../constants/translation";
 
 const TaskInputForm = ({
   newTask,
@@ -20,31 +21,7 @@ const TaskInputForm = ({
   const [selectedTheme, setSelectedTheme] = useState('');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-  const translations = {
-    en: {
-      enterTask: 'Enter a new task',
-      selectTheme: 'Select Theme',
-      addTask: 'Add Task',
-      themes: ['🖥️ Freelance', '💰 Finance', '💞 Wedding', '🛒 Shopping List'],
-    },
-    uk: {
-      enterTask: 'Введіть нове завдання',
-      selectTheme: 'Виберіть тему',
-      addTask: 'Додати завдання',
-      themes: ['🖥️ Фріланс', '💰 Фінанси', "💞 Сім'я", '🛒 Список покупок'],
-    },
-    fr: {
-      enterTask: 'Entrez une nouvelle tâche',
-      selectTheme: 'Choisissez un thème',
-      addTask: 'Ajouter une tâche',
-      themes: [
-        '🖥️ Freelance',
-        '💰 Finances',
-        '💞 Mariage',
-        '🛒 Liste de courses',
-      ],
-    },
-  };
+
 
   const handleThemeSelect = theme => {
     setSelectedTheme(theme);
@@ -60,11 +37,18 @@ const TaskInputForm = ({
   };
 
   return (
+
+
+
     <Modal
       transparent={true}
       visible={isVisible}
       animationType="fade"
+
+      onDismiss={() => setIsVisible(false)}
       onRequestClose={() => setIsVisible(false)}>
+      <TouchableWithoutFeedback style={{flex:1, backgroundColor:'green'}} onPress={() => setIsVisible(false)}>
+
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
           <TextInput
@@ -105,6 +89,8 @@ const TaskInputForm = ({
           </TouchableOpacity>
         </View>
       </View>
+      </TouchableWithoutFeedback>
+
     </Modal>
   );
 };
