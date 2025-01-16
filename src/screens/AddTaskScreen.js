@@ -29,6 +29,27 @@ const translations = {
       `${uncompleted} Inachevées, ${completed} Terminées`,
     emptyList: 'Aucune tâche disponible.',
   },
+  ru: {
+    incomplete: 'Невыполненные',
+    completed: 'Выполненные',
+    taskSummary: (uncompleted, completed) =>
+      `${uncompleted} Невыполненных, ${completed} Выполненных`,
+    emptyList: 'Нет доступных задач.',
+  },
+  zh: {
+    incomplete: '未完成',
+    completed: '已完成',
+    taskSummary: (uncompleted, completed) =>
+      `${uncompleted} 未完成, ${completed} 已完成`,
+    emptyList: '没有可用的任务。',
+  },
+  pl: {
+    incomplete: 'Niewykonane',
+    completed: 'Wykonane',
+    taskSummary: (uncompleted, completed) =>
+      `${uncompleted} Niewykonane, ${completed} Wykonane`,
+    emptyList: 'Brak dostępnych zadań.',
+  },
 };
 
 const AddTaskScreen = () => {

@@ -1,61 +1,99 @@
-import { View, Platform } from 'react-native';
-import { useLinkBuilder, useTheme } from '@react-navigation/native';
-import { Text, PlatformPressable } from '@react-navigation/elements';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-function MyTabBar({ state, descriptors, navigation }) {
-    const { colors } = useTheme();
-    const { buildHref } = useLinkBuilder();
+import React, {useContext} from 'react';
+import {View, Text} from 'react-native';
+import {useLinkBuilder} from '@react-navigation/native';
+import {PlatformPressable} from '@react-navigation/elements';
+import {ThemeContext} from '../context/ThemeContext';
 
-    return (
-        <View style={{ display:'flex', minHeight:50, justifyContent:'space-around', alignItems:'center', flexDirection:'row'}}>
-            {state.routes.map((route, index) => {
-                const { options } = descriptors[route.key];
-                const label =
-                    options.tabBarLabel !== undefined
-                        ? options.tabBarLabel
-                        : options.title !== undefined
-                            ? options.title
-                            : route.name;
+function MyTabBar({state, descriptors, navigation}) {
+  const {buildHref} = useLinkBuilder();
+  const {isDarkTheme} = useContext(ThemeContext); // Отримуємо тему з контексту
 
-                const isFocused = state.index === index;
+  return (
+    <View
+      style={{
+        display: 'flex',
+        minHeight: 50,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        flexDirection: 'row',
+        backgroundColor: isDarkTheme ? '#1E1E24' : '#FFFFFF', // Фон табів
+        borderTopWidth: 1,
+        borderTopColor: isDarkTheme ? '#333' : '#ccc', // Лінія розділення
+      }}>
+      {state.routes.map((route, index) => {
+        const {options} = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
 
-                const onPress = () => {
-                    const event = navigation.emit({
-                        type: 'tabPress',
-                        target: route.key,
-                        canPreventDefault: true,
-                    });
+        const isFocused = state.index === index; // Перевіряємо, чи це активний таб
 
-                    if (!isFocused && !event.defaultPrevented) {
-                        navigation.navigate(route.name, route.params);
-                    }
-                };
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
 
-                const onLongPress = () => {
-                    navigation.emit({
-                        type: 'tabLongPress',
-                        target: route.key,
-                    });
-                };
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name, route.params);
+          }
+        };
 
-                return (
-                    <PlatformPressable
-                        key={index}
-                        href={buildHref(route.name, route.params)}
-                        accessibilityState={isFocused ? { selected: true } : {}}
-                        accessibilityLabel={options.tabBarAccessibilityLabel}
-                        testID={options.tabBarButtonTestID}
-                        onPress={onPress}
-                        onLongPress={onLongPress}
-                    >
-                        <Text style={{ color: isFocused ? colors.primary : colors.text }}>
-                            {label}
-                        </Text>
-                    </PlatformPressable>
-                );
-            })}
-        </View>
-    );
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        return (
+          <PlatformPressable
+            key={index}
+            href={buildHref(route.name, route.params)}
+            accessibilityState={isFocused ? {selected: true} : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarButtonTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}>
+            <View>
+              {typeof label === 'string' ? (
+                // Якщо label — це текст
+                <Text
+                  style={{
+                    color: isFocused
+                      ? isDarkTheme
+                        ? '#ff9d26' // Активний таб у темній темі
+                        : '#007AFF' // Активний таб у світлій темі
+                      : isDarkTheme
+                      ? '#AAAAAA' // Неактивний таб у темній темі
+                      : '#8E8E93', // Неактивний таб у світлій темі
+                    fontSize: 16,
+                    fontWeight: isFocused ? 'bold' : 'normal', // Жирний текст для активного табу
+                  }}>
+                  {label}
+                </Text>
+              ) : (
+                // Якщо label — це компонент (наприклад, іконка)
+                React.cloneElement(label, {
+                  color: isFocused
+                    ? isDarkTheme
+                      ? '#ff9d26'
+                      : '#007AFF'
+                    : isDarkTheme
+                    ? '#AAAAAA'
+                    : '#8E8E93',
+                })
+              )}
+            </View>
+          </PlatformPressable>
+        );
+      })}
+    </View>
+  );
 }
 
-export default MyTabBar
+export default MyTabBar;

@@ -79,15 +79,19 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   completeButton: {
-    padding: 5,
+    width: 37,
+    height: 37,
     borderRadius: 8,
     marginRight: 10,
     borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+
   completeButtonText: {
     fontSize: 14,
     fontWeight: 'bold',
-    paddingHorizontal: 4,
+    paddingHorizontal: 5,
   },
   deleteButton: {
     backgroundColor: '#ff4d4d',

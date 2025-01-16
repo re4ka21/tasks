@@ -1,14 +1,22 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {TouchableOpacity, Text, StyleSheet, Dimensions} from 'react-native';
 
-const AddTaskButton = ({toggleShowInput}) => (
-  <TouchableOpacity style={styles.addButton} onPress={toggleShowInput}>
-    <Text style={styles.addButtonText}>+</Text>
-  </TouchableOpacity>
-);
+const AddTaskButton = ({toggleShowInput}) => {
+  const {width} = Dimensions.get('window');
+
+  return (
+    <TouchableOpacity
+      style={[styles.addButton, {right: width * 0.05}]}
+      onPress={toggleShowInput}>
+      <Text style={styles.addButtonText}>+</Text>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   addButton: {
+    position: 'absolute',
+    bottom: 20, // Відступ від нижнього краю
     width: 70,
     height: 70,
     borderRadius: 35,
@@ -21,8 +29,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
-    marginLeft: 300,
-    marginBottom: 10,
   },
   addButtonText: {
     color: 'white',
