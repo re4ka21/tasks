@@ -121,14 +121,14 @@ const NotebookScreen = () => {
   const handleSaveNote = () => {
     if (currentNote.title.trim() || currentNote.content.trim()) {
       setNotes(prevNotes =>
-        prevNotes.some(note => note.id === currentNote.id)
-          ? prevNotes.map(note =>
-              note.id === currentNote.id ? currentNote : note,
-            )
-          : [
-              ...prevNotes,
-              {...currentNote, createdAt: new Date().toLocaleString()},
-            ],
+          prevNotes.some(note => note.id === currentNote.id)
+              ? prevNotes.map(note =>
+                  note.id === currentNote.id ? currentNote : note,
+              )
+              : [
+                ...prevNotes,
+                {...currentNote, createdAt: new Date().toLocaleString()},
+              ],
       );
     }
     setIsCreating(false);
@@ -145,115 +145,137 @@ const NotebookScreen = () => {
   };
 
   const t = translations[language];
+  const themeStyles = {
+    light: {
+      backgroundColor: '#FFFFFF', // Світлий фон
+      textColor: '#000000', // Темний текст
+      buttonColor: '#007BFF', // Колір кнопок
+      borderBottomColor:  '#575767' , // Колір розділової лінії
+    },
+    dark: {
+      backgroundColor: '#141419', // Темний фон
+      textColor: '#FFFFFF', // Світлий текст
+      buttonColor: '#FF9D26', // Колір кнопок
+      borderBottomColor: '#D0D0D0', // Колір розділової лінії
+    },
+  };
+  const currentTheme = isDarkTheme ? themeStyles.dark : themeStyles.light;
   return (
-    <View
-      style={[
-        styles.container,
-        {backgroundColor: isDarkTheme ? '#141419' : '#F8F8F8'},
-      ]}>
-      {!isCreating && (
-        <Text style={[styles.set, {color: isDarkTheme ? 'white' : 'black'}]}>
-          {t.notes}
-        </Text>
-      )}
-      {!isCreating && (
-        <View
+      <View
           style={[
-            styles.line,
-            {borderBottomColor: isDarkTheme ? '#D0D0D0' : '#575767'},
+            styles.container,
+            {backgroundColor: currentTheme.backgroundColor}, // Use currentTheme for background color
           ]}
-        />
-      )}
-      {isCreating ? (
-        <View style={styles.editor}>
-          <TextInput
-            style={[
-              styles.titleInput,
-              {color: isDarkTheme ? '#F8F8F8' : '#141419'},
-              {borderBottomColor: isDarkTheme ? '#F8F8F8' : '#141419'},
-            ]}
-            placeholder={t.enterTitle}
-            placeholderTextColor={isDarkTheme ? '#F8F8F8' : '#141419'}
-            value={currentNote.title}
-            onChangeText={text => setCurrentNote({...currentNote, title: text})}
-          />
-          <TextInput
-            style={[
-              styles.contentInput,
-              {color: isDarkTheme ? '#F8F8F8' : '#141419'},
-            ]}
-            placeholder={t.writeYourNote}
-            placeholderTextColor={isDarkTheme ? '#F8F8F8' : '#141419'}
-            value={currentNote.content}
-            onChangeText={text =>
-              setCurrentNote({...currentNote, content: text})
-            }
-            multiline
-          />
-          <TouchableOpacity style={styles.saveButton} onPress={handleSaveNote}>
-            <View style={styles.back}>
-              <Text style={styles.icom}>
-                <Icon
-                  name="chevron-left"
-                  size={17}
-                  color={isDarkTheme ? '#ff9d26' : '#007AFF'}
-                />
-              </Text>
-              <Text
+      >
+        {!isCreating && (
+            <Text style={[styles.set, {color: currentTheme.textColor}]}>
+              {t.notes}
+            </Text>
+        )}
+        {!isCreating && (
+            <View
                 style={[
-                  styles.saveButtonText,
-                  {color: isDarkTheme ? '#ff9d26' : '#007AFF'},
-                ]}>
-                {t.notes}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={styles.listContainer}>
-          <FlatList
-            data={notes}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <View
-                style={[
-                  styles.noteItem,
-                  {backgroundColor: isDarkTheme ? '#141419' : '#F8F8F8'},
-                  {borderColor: isDarkTheme ? '#F8F8F8' : '#141419'},
-                ]}>
-                <TouchableOpacity
-                  style={styles.noteContent}
-                  onPress={() => handleEditNote(item)}>
+                  styles.line,
+                  {borderBottomColor: currentTheme.borderBottomColor}, // Use currentTheme for borderBottomColor
+                ]}
+            />
+        )}
+        {isCreating ? (
+            <View style={styles.editor}>
+              <TextInput
+                  style={[
+                    styles.titleInput,
+                    {color: currentTheme.textColor},
+                    {borderBottomColor: currentTheme.textColor}, // Use currentTheme for text and border colors
+                  ]}
+                  placeholder={t.enterTitle}
+                  placeholderTextColor={currentTheme.textColor}
+                  value={currentNote.title}
+                  onChangeText={text => setCurrentNote({...currentNote, title: text})}
+              />
+              <TextInput
+                  style={[
+                    styles.contentInput,
+                    {color: currentTheme.textColor}, // Use currentTheme for text color
+                  ]}
+                  placeholder={t.writeYourNote}
+                  placeholderTextColor={currentTheme.textColor}
+                  value={currentNote.content}
+                  onChangeText={text =>
+                      setCurrentNote({...currentNote, content: text})
+                  }
+                  multiline
+              />
+              <TouchableOpacity style={styles.saveButton} onPress={handleSaveNote}>
+                <View style={styles.back}>
+                  <Text style={styles.icom}>
+                    <Icon
+                        name="chevron-left"
+                        size={17}
+                        color={currentTheme.buttonColor} // Use currentTheme for button color
+                    />
+                  </Text>
                   <Text
-                    style={[
-                      styles.noteTitle,
-                      {color: isDarkTheme ? '#F8F8F8' : '#141419'},
-                    ]}>
-                    {item.title || t.untitled}
+                      style={[
+                        styles.saveButtonText,
+                        {color: currentTheme.buttonColor}, // Use currentTheme for button text color
+                      ]}
+                  >
+                    {t.notes}
                   </Text>
-                  <Text style={styles.noteDate}>
-                    {t.createdAt} {item.createdAt}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => handleDeleteNote(item.id)}>
-                  <Text style={styles.deleteButtonText}>{t.delete}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-          <TouchableOpacity
-            style={[
-              styles.addButton,
-              {backgroundColor: isDarkTheme ? '#ff9d26' : '#007AFF'},
-            ]}
-            onPress={handleAddNote}>
-            <Text style={styles.addButtonText}>{t.addNote}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+        ) : (
+            <View style={styles.listContainer}>
+              <FlatList
+                  data={notes}
+                  keyExtractor={item => item.id}
+                  renderItem={({item}) => (
+                      <View
+                          style={[
+                            styles.noteItem,
+                            {backgroundColor: currentTheme.backgroundColor},
+                            {borderColor: currentTheme.textColor}, // Use currentTheme for background and border color
+                          ]}
+                      >
+                        <TouchableOpacity
+                            style={styles.noteContent}
+                            onPress={() => handleEditNote(item)}
+                        >
+                          <Text
+                              style={[
+                                styles.noteTitle,
+                                {color: currentTheme.textColor}, // Use currentTheme for text color
+                              ]}
+                          >
+                            {item.title || t.untitled}
+                          </Text>
+                          <Text style={styles.noteDate}>
+                            {t.createdAt} {item.createdAt}
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.deleteButton}
+                            onPress={() => handleDeleteNote(item.id)}
+                        >
+                          <Text style={styles.deleteButtonText}>{t.delete}</Text>
+                        </TouchableOpacity>
+                      </View>
+                  )}
+              />
+              <TouchableOpacity
+                  style={[
+                    styles.addButton,
+                    {backgroundColor: currentTheme.buttonColor}, // Use currentTheme for button color
+                  ]}
+                  onPress={handleAddNote}
+              >
+                <Text style={styles.addButtonText}>{t.addNote}</Text>
+              </TouchableOpacity>
+            </View>
+        )}
+      </View>
   );
 };
 
@@ -271,7 +293,7 @@ const styles = StyleSheet.create({
   },
   line: {
     borderBottomWidth: 3,
-    borderBottomColor: 'white',
+
     paddingBottom: 5,
     marginHorizontal: 3,
     marginBottom: 16,
@@ -329,7 +351,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     borderBottomWidth: 2,
     marginBottom: 10,
-    marginTop: 18,
+    marginTop: 25,
     padding: 5,
   },
   contentInput: {
@@ -342,6 +364,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: 8,
     alignItems: 'center',
+    marginTop:5,
+
   },
   saveButtonText: {
     color: '#fff',

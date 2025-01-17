@@ -23,8 +23,8 @@ export const ThemeProvider = ({children}) => {
   };
 
   return (
-    <ThemeContext.Provider value={{isDarkTheme, toggleTheme}}>
-      {children}
-    </ThemeContext.Provider>
+      <ThemeContext.Provider value={{isDarkTheme, toggleTheme}}>
+        {children}
+      </ThemeContext.Provider>
   );
 };

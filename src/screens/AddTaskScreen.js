@@ -59,7 +59,21 @@ const AddTaskScreen = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [showInput, setShowInput] = useState(false);
-
+  const themeStyles = {
+    light: {
+      backgroundColor: '#FFFFFF', // Світлий фон
+      textColor: '#000000', // Темний текст
+      buttonColor: '#007BFF', // Колір кнопок
+      borderBottomColor:  '#575767' , // Колір розділової лінії
+    },
+    dark: {
+      backgroundColor: '#141419', // Темний фон
+      textColor: '#FFFFFF', // Світлий текст
+      buttonColor: '#FF9D26', // Колір кнопок
+      borderBottomColor: '#D0D0D0', // Колір розділової лінії
+    },
+  };
+  const currentTheme = isDarkTheme ? themeStyles.dark : themeStyles.light;
   useEffect(() => {
     const date = new Date();
     const day = date.getDate();
@@ -119,46 +133,48 @@ const AddTaskScreen = () => {
   const t = translations[language];
 
   return (
-    <SafeAreaView
-      style={[
-        styles.container,
-        {backgroundColor: isDarkTheme ? '#141419' : '#F8F8F8'},
-      ]}>
-      <Text style={[styles.date, {color: isDarkTheme ? 'white' : 'black'}]}>
-        {currentDate}
-      </Text>
-      <Text style={styles.taskSummary}>
-        {t.taskSummary(
-          tasks.filter(task => !task.completed).length,
-          tasks.filter(task => task.completed).length,
-        )}
-      </Text>
+      <SafeAreaView
+          style={[
+            styles.container,
+            {backgroundColor: currentTheme.backgroundColor}, // Use currentTheme for background color
+          ]}>
+        <Text style={[styles.date, {color: currentTheme.textColor}]}>
+          {currentDate}
+        </Text>
+        <Text style={styles.taskSummary}>
+          {t.taskSummary(
+              tasks.filter(task => !task.completed).length,
+              tasks.filter(task => task.completed).length,
+          )}
+        </Text>
 
-      <View
-        style={[
-          styles.line,
-          {borderBottomColor: isDarkTheme ? '#D0D0D0' : '#575767'},
-        ]}
-      />
-      <View style={styles.taskContainer}>
-        <TaskList
-          tasks={tasks}
-          markTaskComplete={markTaskComplete}
-          deleteTask={deleteTask}
-          translations={t}
+        <View
+            style={[
+              styles.line,
+              {borderBottomColor: currentTheme.borderBottomColor}, // Use currentTheme for border color
+            ]}
         />
-        {showInput ? (
-          <TaskInputForm
-            newTask={newTask}
-            setIsVisible={setShowInput}
-            setNewTask={setNewTask}
-            addTask={addTask}
+        <View style={styles.taskContainer}>
+          <TaskList
+              tasks={tasks}
+              markTaskComplete={markTaskComplete}
+              deleteTask={deleteTask}
+              translations={t}
+              currentTheme={currentTheme} // Pass currentTheme to TaskList component
           />
-        ) : (
-          <AddTaskButton toggleShowInput={() => setShowInput(true)} />
-        )}
-      </View>
-    </SafeAreaView>
+          {showInput ? (
+              <TaskInputForm
+                  newTask={newTask}
+                  setIsVisible={setShowInput}
+                  setNewTask={setNewTask}
+                  addTask={addTask}
+                  currentTheme={currentTheme} // Pass currentTheme to TaskInputForm component
+              />
+          ) : (
+              <AddTaskButton toggleShowInput={() => setShowInput(true)} />
+          )}
+        </View>
+      </SafeAreaView>
   );
 };
 

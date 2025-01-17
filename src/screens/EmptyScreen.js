@@ -17,6 +17,20 @@ const EmptyScreen = () => {
   const {language, selectLanguage} = useContext(LanguageContext);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  const themeStyles = {
+    light: {
+      backgroundColor: '#FFFFFF', // Світлий фон
+      textColor: '#000000', // Темний текст
+      buttonColor: '#007BFF', // Колір кнопок
+      borderBottomColor:  '#575767' , // Колір розділової лінії
+    },
+    dark: {
+      backgroundColor: '#141419', // Темний фон
+      textColor: '#FFFFFF', // Світлий текст
+      buttonColor: '#FF9D26', // Колір кнопок
+      borderBottomColor: '#D0D0D0', // Колір розділової лінії
+    },
+  };
   const translations = {
     en: {
       theme: 'Theme',
@@ -123,7 +137,7 @@ const EmptyScreen = () => {
   };
 
   const t = translations[language];
-
+  const currentTheme = isDarkTheme ? themeStyles.dark : themeStyles.light;
   const languages = [
     {key: 'en', label: t.english},
     {key: 'uk', label: t.ukrainian},
@@ -134,126 +148,103 @@ const EmptyScreen = () => {
   ];
 
   const moon = (
-    <Icon name="moon" size={30} color={isDarkTheme ? 'white' : 'black'} />
+      <Icon name="moon" size={30} color={currentTheme.textColor} />
   );
   const globe = (
-    <Icon name="globe" size={30} color={isDarkTheme ? 'white' : 'black'} />
+      <Icon name="globe" size={30} color={currentTheme.textColor} />
   );
   const gal = <Icon name="check" size={20} color="green" />;
   const modalContentBackgroundColor = isDarkTheme ? '#2C2C2C' : '#FFFFFF'; // Фон для вмісту модалки
   return (
-    <View
-      style={[
-        styles.container,
-        {backgroundColor: isDarkTheme ? '#141419' : '#F8F8F8'},
-      ]}>
-      <Text style={[styles.set, {color: isDarkTheme ? 'white' : 'black'}]}>
-        {t.settings}
-      </Text>
       <View
-        style={[
-          styles.line,
-          {borderBottomColor: isDarkTheme ? '#D0D0D0' : '#575767'},
-        ]}
-      />
-      <View style={styles.row}>
-        <View style={styles.rowContent}>
-          {moon}
-          <Text style={[styles.text, {color: isDarkTheme ? 'white' : 'black'}]}>
-            {isDarkTheme ? t.dark : t.light}
-          </Text>
-        </View>
-        <ToggleSwitch
-          isOn={isDarkTheme}
-          onColor="#ff9d26"
-          offColor="#ccc"
-          onToggle={toggleTheme}
-          style={[
-            styles.toggleSwitch,
-            {transform: [{scaleX: 1.5}, {scaleY: 1.5}]},
-          ]}
+          style={[styles.container, { backgroundColor: currentTheme.backgroundColor }]}>
+        <Text style={[styles.set, { color: currentTheme.textColor }]}>
+          {t.settings}
+        </Text>
+        <View
+            style={[styles.line, { borderBottomColor: currentTheme.borderBottomColor }]}
         />
-      </View>
-      <View style={styles.row}>
-        <View style={styles.rowContent}>
-          {globe}
-          <Text style={[styles.text, {color: isDarkTheme ? 'white' : 'black'}]}>
-            {t.changeLang}
-          </Text>
+        <View style={styles.row}>
+          <View style={styles.rowContent}>
+            {moon}
+            <Text style={[styles.text, { color: currentTheme.textColor }]}>
+              {isDarkTheme ? t.dark : t.light}
+            </Text>
+          </View>
+          <ToggleSwitch
+              isOn={isDarkTheme}
+              onColor={currentTheme.buttonColor}
+              offColor="#ccc"
+              onToggle={toggleTheme}
+              style={[styles.toggleSwitch, { transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }]}
+          />
         </View>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <View style={styles.lann}>
-            <Text
-              style={[
-                styles.changeLang,
-                {color: isDarkTheme ? '#ff9d26' : '#007AFF'},
-              ]}>
-              {t.language}
-            </Text>
-            <Text style={styles.icom}>
-              <Icon name="chevron-right" size={17} color="gray" />
+        <View style={styles.row}>
+          <View style={styles.rowContent}>
+            {globe}
+            <Text style={[styles.text, { color: currentTheme.textColor }]}>
+              {t.changeLang}
             </Text>
           </View>
-        </TouchableOpacity>
-      </View>
-      <Modal
-        transparent={true}
-        visible={isModalVisible}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}>
-        <TouchableOpacity
-          style={styles.modalContainer}
-          activeOpacity={1}
-          onPress={() => setModalVisible(false)}>
-          <View
-            style={[
-              styles.modalContent,
-              {backgroundColor: modalContentBackgroundColor},
-            ]}>
-            <Text
-              style={[styles.now, {color: isDarkTheme ? 'white' : 'black'}]}>
-              {t.now}
-            </Text>
-
-            <View style={styles.cur}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <View style={styles.lann}>
               <Text
-                style={[
-                  styles.currentLanguage,
-                  {color: isDarkTheme ? '#ff9d26' : '#007AFF'},
-                ]}>
-                {`${t.lan}`}
+                  style={[styles.changeLang, { color: currentTheme.buttonColor }]}>
+                {t.language}
               </Text>
-              <Text>{gal}</Text>
+              <Text style={styles.icom}>
+                <Icon name="chevron-right" size={17} color="gray" />
+              </Text>
             </View>
+          </TouchableOpacity>
+        </View>
+        <Modal
+            transparent={true}
+            visible={isModalVisible}
+            animationType="slide"
+            onRequestClose={() => setModalVisible(false)}>
+          <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setModalVisible(false)}>
+            <View
+                style={[styles.modalContent, { backgroundColor: modalContentBackgroundColor }]}>
+              <Text style={[styles.now, { color: currentTheme.textColor }]}>
+                {t.now}
+              </Text>
 
-            <Text
-              style={[styles.all, {color: isDarkTheme ? 'white' : 'black'}]}>
-              {t.all}
-            </Text>
+              <View style={styles.cur}>
+                <Text
+                    style={[styles.currentLanguage, { color: currentTheme.buttonColor }]}>
+                  {`${t.lan}`}
+                </Text>
+                <Text>{gal}</Text>
+              </View>
 
-            <FlatList
-              data={languages.filter(item => item.key !== language)} // Фільтруємо поточну мову
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    selectLanguage(item.key);
-                    setModalVisible(false);
-                  }}>
-                  <Text
-                    style={[
-                      styles.languageOption,
-                      {color: isDarkTheme ? 'white' : 'black'},
-                    ]}>
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={item => item.key}
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal>
-    </View>
+              <Text style={[styles.all, { color: currentTheme.textColor }]}>
+                {t.all}
+              </Text>
+
+              <FlatList
+                  data={languages.filter(item => item.key !== language)}
+                  renderItem={({ item }) => (
+                      <TouchableOpacity
+                          onPress={() => {
+                            selectLanguage(item.key);
+                            setModalVisible(false);
+                          }}>
+                        <Text
+                            style={[styles.languageOption, { color: currentTheme.textColor }]}>
+                          {item.label}
+                        </Text>
+                      </TouchableOpacity>
+                  )}
+                  keyExtractor={item => item.key}
+              />
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      </View>
   );
 };
 
