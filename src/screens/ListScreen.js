@@ -1,17 +1,19 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {
+  KeyboardAvoidingView,
   View,
   Text,
   TextInput,
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Keyboard,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ThemeContext} from '../context/ThemeContext';
 import {LanguageContext} from '../context/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-
+import ThemedBlock from '../components/Block';
 const translations = {
   en: {
     notes: 'Notes',
@@ -134,6 +136,21 @@ const NotebookScreen = () => {
     setIsCreating(false);
     setCurrentNote(null);
   };
+  const handleSave = () => {
+    if (currentNote.title.trim() || currentNote.content.trim()) {
+      setNotes(prevNotes =>
+          prevNotes.some(note => note.id === currentNote.id)
+              ? prevNotes.map(note =>
+                  note.id === currentNote.id ? currentNote : note,
+              )
+              : [
+                ...prevNotes,
+                {...currentNote, createdAt: new Date().toLocaleString()},
+              ],
+      );
+    }
+    Keyboard.dismiss();
+  };
 
   const handleDeleteNote = id => {
     setNotes(prevNotes => prevNotes.filter(note => note.id !== id));
@@ -161,25 +178,18 @@ const NotebookScreen = () => {
   };
   const currentTheme = isDarkTheme ? themeStyles.dark : themeStyles.light;
   return (
-      <View
-          style={[
-            styles.container,
-            {backgroundColor: currentTheme.backgroundColor}, // Use currentTheme for background color
-          ]}
-      >
+      <KeyboardAvoidingView
+          style={[styles.container, {backgroundColor: currentTheme.backgroundColor}]}
+          behavior="height">
         {!isCreating && (
-            <Text style={[styles.set, {color: currentTheme.textColor}]}>
-              {t.notes}
-            </Text>
-        )}
-        {!isCreating && (
-            <View
-                style={[
-                  styles.line,
-                  {borderBottomColor: currentTheme.borderBottomColor}, // Use currentTheme for borderBottomColor
-                ]}
+            <ThemedBlock
+                text={t.notes}
+                show={!isCreating} // Показується лише якщо isCreating === false
+                textStyle={[styles.set, { color: currentTheme.textColor }]}
+                lineStyle={[styles.line, { borderBottomColor: currentTheme.borderBottomColor }]}
             />
         )}
+
         {isCreating ? (
             <View style={styles.editor}>
               <TextInput
@@ -196,7 +206,7 @@ const NotebookScreen = () => {
               <TextInput
                   style={[
                     styles.contentInput,
-                    {color: currentTheme.textColor}, // Use currentTheme for text color
+                    {color: currentTheme.textColor},
                   ]}
                   placeholder={t.writeYourNote}
                   placeholderTextColor={currentTheme.textColor}
@@ -205,6 +215,8 @@ const NotebookScreen = () => {
                       setCurrentNote({...currentNote, content: text})
                   }
                   multiline
+                  scrollEnabled={true} // Дозволяє прокручувати текст
+                  textAlignVertical="top"
               />
               <TouchableOpacity style={styles.saveButton} onPress={handleSaveNote}>
                 <View style={styles.back}>
@@ -222,6 +234,18 @@ const NotebookScreen = () => {
                       ]}
                   >
                     {t.notes}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.saveButtontwo} onPress={handleSave}>
+                <View style={styles.back}>
+                  <Text
+                      style={[
+                        styles.saveButtonText,
+                        {color: currentTheme.buttonColor}, // Use currentTheme for button text color
+                      ]}
+                  >
+                    {t.save}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -275,7 +299,7 @@ const NotebookScreen = () => {
               </TouchableOpacity>
             </View>
         )}
-      </View>
+      </KeyboardAvoidingView>
   );
 };
 
@@ -357,21 +381,32 @@ const styles = StyleSheet.create({
   contentInput: {
     fontSize: 16,
     padding: 10,
-    height: 800,
-    textAlignVertical: 'top',
+
+    height: 500, // Обмежте висоту (можете налаштувати під свої потреби)
+    maxHeight: 500, // Максимальна висота
+    textAlignVertical: 'top', // Текст буде вирівняний з верхньої частини
+
   },
   saveButton: {
     position: 'absolute',
     borderRadius: 8,
     alignItems: 'center',
     marginTop:5,
-
+  },
+  saveButtontwo:{
+    position: 'absolute',
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop:5,
+    right: 0,
+    paddingRight: 10,
   },
   saveButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
+
   deleteButton: {
     backgroundColor: '#dc3545',
     padding: 10,

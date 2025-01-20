@@ -11,7 +11,7 @@ import {ThemeContext} from '../context/ThemeContext';
 import {LanguageContext} from '../context/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ToggleSwitch from 'toggle-switch-react-native';
-
+import ThemedBlock from '../components/Block';
 const EmptyScreen = () => {
   const {isDarkTheme, toggleTheme} = useContext(ThemeContext);
   const {language, selectLanguage} = useContext(LanguageContext);
@@ -158,11 +158,11 @@ const EmptyScreen = () => {
   return (
       <View
           style={[styles.container, { backgroundColor: currentTheme.backgroundColor }]}>
-        <Text style={[styles.set, { color: currentTheme.textColor }]}>
-          {t.settings}
-        </Text>
-        <View
-            style={[styles.line, { borderBottomColor: currentTheme.borderBottomColor }]}
+        <ThemedBlock
+            text={t.settings}
+            show={true} // Завжди показується
+            textStyle={[styles.set, { color: currentTheme.textColor }]}
+            lineStyle={[styles.line, { borderBottomColor: currentTheme.borderBottomColor }]}
         />
         <View style={styles.row}>
           <View style={styles.rowContent}>
